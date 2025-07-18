@@ -1,3 +1,4 @@
 package payload
 
-type UpdateProfile struct{}
+type UpdateProfile struct {
+}

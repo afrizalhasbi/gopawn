@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"gopawn/internal/data/payload"
 	"gopawn/internal/service"
 	"net/http"
@@ -12,15 +13,19 @@ type AuthHandler struct {
 }
 
 func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
-	var reg payload.Login
+	var reg payload.Register
 
 	if err := json.NewDecoder(r.Body).Decode(&reg); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	h.Service.Register(&reg)
-	w.WriteHeader(http.StatusOK)
+	err := h.Service.Register(&reg)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+	} else {
+		w.WriteHeader(http.StatusOK)
+	}
 }
 
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
@@ -30,21 +35,45 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.Service.Login(&login)
-
-	w.WriteHeader(http.StatusNotImplemented)
-	w.Write([]byte("Login endpoint not implemented yet"))
+	jwtToken, err := h.Service.Login(&login)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	} else {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, `{"token": "%s"}`, jwtToken)
+	}
 }
 
-func (h *AuthHandler) ResetPassword(w http.ResponseWriter, r *http.Request) {
-	var reg payload.Reset
+func (h *AuthHandler) Delete(w http.ResponseWriter, r *http.Request) {
+	var reg payload.Delete
 
 	if err := json.NewDecoder(r.Body).Decode(&reg); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	h.Service.ResetPassword(&reg)
+	err := h.Service.Delete(&reg)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+	} else {
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
+func (h *AuthHandler) ResetPassword(w http.ResponseWriter, r *http.Request) {
+	var reg payload.ResetPassword
+	err := json.NewDecoder(r.Body).Decode(&reg)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err = h.Service.ResetPassword(&reg)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
 }
 
