@@ -2,13 +2,12 @@ package prelude
 
 type GameStatus int8
 type FinishReason uint8
-type Color bool
+type Color uint8
 
 const (
-	ongoing  GameStatus = 10
-	whiteWin GameStatus = 1
-	blackWin GameStatus = -1
-	draw     GameStatus = 0
+	Ongoing  GameStatus = 10
+	WhiteWin GameStatus = 1
+	BDraw    GameStatus = 0
 )
 
 const (
@@ -23,6 +22,6 @@ const (
 )
 
 const (
-	white Color = true
-	black Color = false
+	White Color = 1
+	Black Color = 0
 )

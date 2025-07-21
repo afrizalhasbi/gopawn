@@ -1,11 +1,9 @@
 package payload
 
-type Register struct {
-	Name     string `json:"name"`
+type Login struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-type Login Register
-type ForgotPassword Register
-type Delete Register
+type Delete Login
+type RequestReset Login
