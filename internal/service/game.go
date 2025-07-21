@@ -74,6 +74,7 @@ func (s *GameService) matchQueue() {
 		}
 	}
 }
+
 func (s *GameService) matchPlayers(p1 *WaitedPlayer, p2 *WaitedPlayer) (schema.Game, error) {
 	p1.WaitedMillis = uint16(time.Now().UnixMilli()) - p1.WaitedMillis
 	p2.WaitedMillis = uint16(time.Now().UnixMilli()) - p2.WaitedMillis
